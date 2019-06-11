@@ -1,7 +1,9 @@
 <javascriptresource>
-	<name>Bake Adjustments Layer (v1.0)</name>
+	<name>Bake selected Layer</name>
 	<about>
-			This will bake the selected adjustment layers to ALL layers below.
+			This will bake the selected layer onto all the layers below.
+			This is best used for adjustment layers, but it can be a
+			layer of any type.
 			Evan Viera
 	</about>
 	<menu>filter</menu>

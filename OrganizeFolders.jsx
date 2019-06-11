@@ -1,5 +1,5 @@
 <javascriptresource>
-  <name>Organize Labels</name>
+  <name>Organize Folders</name>
   <about>
       This will color code nested folders to help readiblity.
       It will also rename layers.
