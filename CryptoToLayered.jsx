@@ -105,25 +105,10 @@ function getAllCrypoLayers( )
 */
 function convertColorToMask( )
 {
-	// =======================================================
-	var idsetd = charIDToTypeID( "setd" );
-		var desc155 = new ActionDescriptor();
-		var idnull = charIDToTypeID( "null" );
-			var ref75 = new ActionReference();
-			var idChnl = charIDToTypeID( "Chnl" );
-			var idfsel = charIDToTypeID( "fsel" );
-			ref75.putProperty( idChnl, idfsel );
-		desc155.putReference( idnull, ref75 );
-		var idT = charIDToTypeID( "T   " );
-			var ref76 = new ActionReference();
-			var idChnl = charIDToTypeID( "Chnl" );
-			var idChnl = charIDToTypeID( "Chnl" );
-			var idRGB = charIDToTypeID( "RGB " );
-			ref76.putEnumerated( idChnl, idChnl, idRGB );
-		desc155.putReference( idT, ref76 );
-	executeAction( idsetd, desc155, DialogModes.NO );
-
-	// =======================================================
+  // Load Red channel to selection
+  doc.selection.load( doc.channels.getByName('Red') );
+	
+	// Create mask from selection
 	var idMk = charIDToTypeID( "Mk  " );
 		var desc156 = new ActionDescriptor();
 		var idNw = charIDToTypeID( "Nw  " );
