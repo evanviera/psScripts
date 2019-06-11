@@ -69,7 +69,6 @@ function applyCryptoToRgbLayer( __cryptoLayer )
 	return rgbDuplicate.merge( );
 }
 
-*
 
 /*		------------------------------------------------
 
