@@ -12,7 +12,6 @@ function getIndex( __selectedLayer )
 }
 
 
-
 //	****************************************
 // 	Collects all layers below into array
 //	****************************************
@@ -22,19 +21,17 @@ function collectLayersBelow( __index, __parent )
     for ( var i = __index; i < __parent.layers.length; i++ ) {
 
 		var currentLayer = __parent.layers[ i ];
-        if ( currentLayer.typename == "ArtLayer" ) {
-			if ( currentLayer.visible == true ) {
-				if ( currentLayer.kind == LayerKind.NORMAL ) {
+        if ( ( currentLayer.typename == "ArtLayer" )
+						&& ( currentLayer.visible == true )
+						&& ( currentLayer.kind == LayerKind.NORMAL ) )
+				{
 					collectedLayers.push( currentLayer );
 				}
-			}
-        }
-
-		else {
+				else
+				{
             collectLayersBelow( 0, currentLayer );
         }
 	}
-
   return collectedLayers;
 }
 
@@ -42,35 +39,40 @@ function collectLayersBelow( __index, __parent )
 //	****************************************
 // 	Collects all layers underneat into array
 //	****************************************
-function collectClippingLayers( )
+function collectClippingLayers( __index, __parent )
 {
-	var i = layerIndex;
-	var currentLayer = layerParent.layers[ i ];
+	var currentLayer = __parent.layers[ __index ];
   var collectedLayers = [];
 
 	while ( currentLayer.grouped == true )
 	{
-		currentLayer = layerParent.layers[ i ];
-
 		// If current layer is a folder ("grouped") then collectLayersBelow
-		if ( currentLayer.typename == "LayerSet" ) collectLayersBelow( 0, currentLayer );
-
-		if ( currentLayer.typename == "ArtLayer" ) collectedLayers.push( currentLayer );
-		i++;
+		if ( currentLayer.typename == "LayerSet" )
+		{
+			var layersFromSet = collectLayersBelow( 0, currentLayer );
+			collectedLayers.push( layersFromSet );
+		}
+		else if ( currentLayer.typename == "ArtLayer" )
+		{
+			collectedLayers.push( currentLayer );
+		}
+		currentLayer = layerParent.layers[ ++__index ];
 	}
 
   return collectedLayers;
 }
 
+
 //	****************************************
 // 	Executes actions for all layers in array
 //	****************************************
-function copyAndMergeSelectedLayer( )
+function copyAndMergeSelectedLayer( __selectedLayer, __collectedLayers )
 {
-	for ( var i = 0; i < collectedLayers.length; i++ )
+	for ( var i = 0; i < __collectedLayers.length; i++ )
 	{
-		var duplicatedLayer = selectedLayer.duplicate( collectedLayers[i], ElementPlacement.PLACEBEFORE );
-		if (duplicatedLayer.grouped == false) duplicatedLayer.grouped = true;
+		var duplicatedLayer = __selectedLayer.duplicate( __collectedLayers[ i ], ElementPlacement.PLACEBEFORE );
+		// duplicatedLayer.grouped = ( duplicatedLayer.grouped == false ) ? true : true;
+		duplicatedLayer.grouped = true;
 		duplicatedLayer.merge( );
 	}
 }
@@ -81,14 +83,14 @@ function copyAndMergeSelectedLayer( )
 function proofCopy( )
 {
 	doc.selection.selectAll( );
-	doc.selection.copy(true);
+	doc.selection.copy( true );
 }
 
 function proofPaste( )
 {
-	var proof = doc.paste(true);
+	var proof = doc.paste( true );
 
 	proof.name = "PROOF";
-	proof.move(doc.layers[0], ElementPlacement.PLACEBEFORE);
+	proof.move( doc.layers[ 0 ], ElementPlacement.PLACEBEFORE );
 	proof.visible = false;
 }
