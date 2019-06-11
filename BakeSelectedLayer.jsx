@@ -1,12 +1,14 @@
 <javascriptresource>
-<name>Bake Adjustments Layer (v1.0)</name>
-<menu>filter</menu>
-<category>Viera</category>
-<type>automate</type>
-
-<about>This will bake the selected adjustment layers to ALL layers below. - by Evan Viera</about>
-<enableinfo>true</enableinfo>
-</javascriptresource>
+	<name>Bake Adjustments Layer (v1.0)</name>
+	<about>
+			This will bake the selected adjustment layers to ALL layers below.
+			Evan Viera
+	</about>
+	<menu>filter</menu>
+	<category>Viera</category>
+	<type>automate</type>
+	<enableinfo>true</enableinfo>
+	</javascriptresource>
 
 var doc = activeDocument;
 var selectedLayer = doc.activeLayer;

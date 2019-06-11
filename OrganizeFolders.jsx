@@ -9,7 +9,7 @@
   <category>Viera</category>
   <type>automate</type>
   <enableinfo>true</enableinfo>
-</javascriptresource>
+  </javascriptresource>
 
 var doc = activeDocument;
 var idColors = [ "Rd  ", "Orng", "Ylw ", "Grn ", "Bl  ", "Vlt ", "Gry " ];
