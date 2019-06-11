@@ -1,5 +1,5 @@
 <javascriptresource>
-<name>Test Bed</name>
+<name>-- TESTBED --</name>
 <menu>filter</menu>
 <category>Viera</category>
 <type>automate</type>
@@ -10,11 +10,25 @@
 
 var doc = activeDocument;
 var selectedLayer = doc.activeLayer;
+
+doc.selection.load( doc.channels.getByName('Red') );
+
+/*
+
+app.activeDocument.channels.getByName( 'Red' );
+
+var channelRef = [
+  doc.channels.getByName('Red'),
+  doc.channels.getByName('Green'),
+  doc.channels.getByName('Blue')
+  ];
+
 var layerParent = selectedLayer.parent;
 var collectedLayers = [];
 var layerIndex = 0;
 
 // =======================================================
+
 var idtoolModalStateChanged = stringIDToTypeID( "toolModalStateChanged" );
     var desc517 = new ActionDescriptor();
     var idLvl = charIDToTypeID( "Lvl " );
@@ -65,10 +79,6 @@ var idtoolModalStateChanged = stringIDToTypeID( "toolModalStateChanged" );
 executeAction( idtoolModalStateChanged, desc519, DialogModes.NO );
 
 
-
-
-
-/*
 
 
 var idColors = [ "Rd  ", "Orng", "Ylw ", "Grn ", "Bl  ", "Vlt ", "Gry " ];
