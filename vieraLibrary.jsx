@@ -1,6 +1,23 @@
-//	****************************************
+/*
+		---------------------------------------------------------------------------
+
+		Various functions use throughout these PS scripts. Be sure
+		to #include this library when using them.
+
+		Evan Viera -- hello@evanviera.com
+
+		---------------------------------------------------------------------------
+*/
+
+
+
+
+
+//	---------------------------------------------------------------------------
+//
 // 	Returns the index of the selected layer
-//	****************************************
+//
+//	---------------------------------------------------------------------------
 function getIndex( __selectedLayer )
 {
 	var index = 0;
@@ -12,9 +29,12 @@ function getIndex( __selectedLayer )
 }
 
 
-//	****************************************
+
+//	---------------------------------------------------------------------------
+//
 // 	Collects all layers below into array
-//	****************************************
+//
+//	---------------------------------------------------------------------------
 function collectLayersBelow( __index, __parent )
 {
     var collectedLayers = [];
@@ -36,9 +56,12 @@ function collectLayersBelow( __index, __parent )
 }
 
 
-//	****************************************
+
+//	---------------------------------------------------------------------------
+//
 // 	Collects all layers underneat into array
-//	****************************************
+//
+//	---------------------------------------------------------------------------
 function collectClippingLayers( __index, __parent )
 {
 	var currentLayer = __parent.layers[ __index ];
@@ -63,9 +86,12 @@ function collectClippingLayers( __index, __parent )
 }
 
 
-//	****************************************
+
+//	---------------------------------------------------------------------------
+//
 // 	Executes actions for all layers in array
-//	****************************************
+//
+//	---------------------------------------------------------------------------
 function copyAndMergeSelectedLayer( __selectedLayer, __collectedLayers )
 {
 	for ( var i = 0; i < __collectedLayers.length; i++ )
@@ -77,9 +103,13 @@ function copyAndMergeSelectedLayer( __selectedLayer, __collectedLayers )
 	}
 }
 
-//	****************************************
+
+
+//	---------------------------------------------------------------------------
+//
 // 	Proof - Copy and Paste
-//	****************************************
+//
+//	---------------------------------------------------------------------------
 function proofCopy( )
 {
 	doc.selection.selectAll( );
