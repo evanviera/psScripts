@@ -105,11 +105,13 @@ function copyAndMergeSelectedLayer( __selectedLayer, __collectedLayers )
 
 
 
-//	---------------------------------------------------------------------------
-//
-// 	Proof - Copy and Paste
-//
-//	---------------------------------------------------------------------------
+/*
+	---------------------------------------------------------------------------
+
+ 	Proof - Copy and Paste
+
+	---------------------------------------------------------------------------
+*/
 function proofCopy( )
 {
 	doc.selection.selectAll( );
@@ -123,4 +125,44 @@ function proofPaste( )
 	proof.name = "PROOF";
 	proof.move( doc.layers[ 0 ], ElementPlacement.PLACEBEFORE );
 	proof.visible = false;
+}
+
+
+
+/*
+		------------------------------------------------
+
+		Converts RGB to Mask
+		This was generated using the script listener,
+		it will convert the RGB channels into a matte.
+
+		------------------------------------------------
+*/
+function convertRGBToMask( )
+{
+	var doc = activeDocument;
+
+  // Load Red channel to selection
+  doc.selection.load( doc.channels.getByName( 'Red' ), SelectionType.REPLACE );
+	doc.selection.load( doc.channels.getByName( 'Green' ), SelectionType.EXTEND );
+	doc.selection.load( doc.channels.getByName( 'Blue' ), SelectionType.EXTEND );
+
+	// Create mask from selection
+	var idMk = charIDToTypeID( "Mk  " );
+		var desc156 = new ActionDescriptor();
+		var idNw = charIDToTypeID( "Nw  " );
+		var idChnl = charIDToTypeID( "Chnl" );
+		desc156.putClass( idNw, idChnl );
+		var idAt = charIDToTypeID( "At  " );
+			var ref77 = new ActionReference();
+			var idChnl = charIDToTypeID( "Chnl" );
+			var idChnl = charIDToTypeID( "Chnl" );
+			var idMsk = charIDToTypeID( "Msk " );
+			ref77.putEnumerated( idChnl, idChnl, idMsk );
+		desc156.putReference( idAt, ref77 );
+		var idUsng = charIDToTypeID( "Usng" );
+		var idUsrM = charIDToTypeID( "UsrM" );
+		var idRvlS = charIDToTypeID( "RvlS" );
+		desc156.putEnumerated( idUsng, idUsrM, idRvlS );
+	executeAction( idMk, desc156, DialogModes.NO );
 }
