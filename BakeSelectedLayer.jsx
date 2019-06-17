@@ -1,5 +1,5 @@
 <javascriptresource>
-	<name>Bake selected Layer</name>
+	<name>Bake Selected Layer</name>
 	<about>
 			This will bake the selected layer onto all the layers below.
 			This is best used for adjustment layers, but it can be a
