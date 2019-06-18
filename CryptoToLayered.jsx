@@ -17,7 +17,7 @@ var layerIndex = 0;
 var rgbLayer;
 
 // Collect all Cryptomatte Layers
-var cryptoLayers = getAllCrypoLayers( )
+var cryptoLayers = getAllCrypoLayers( );
 
 // Find "RenderLayer.Combined.RGBA" and store as variable rgbLayer
 // Disable the visibility for all layers. Important for the RGB to A function.
@@ -107,7 +107,7 @@ function convertColorToMask( )
 {
   // Load Red channel to selection
   doc.selection.load( doc.channels.getByName('Red') );
-	
+
 	// Create mask from selection
 	var idMk = charIDToTypeID( "Mk  " );
 		var desc156 = new ActionDescriptor();
