@@ -12,6 +12,8 @@
   <type>automate</type>
   </javascriptresource>
 
+#include "vieraLibrary.jsx"
+
 var doc = activeDocument;
 var layerIndex = 0;
 var rgbLayer;
@@ -61,7 +63,7 @@ for ( var i = 0; i < cryptoLayers.length; i++ ) cryptoLayers[ i ].visible = true
 function applyCryptoToRgbLayer( __cryptoLayer )
 {
 	doc.activeLayer = __cryptoLayer;
-	convertColorToMask();
+	convertRGBToMask();
 
 	var rgbDuplicate = rgbLayer.duplicate( __cryptoLayer, ElementPlacement.PLACEBEFORE );
 		rgbDuplicate.grouped = true;
@@ -92,38 +94,4 @@ function getAllCrypoLayers( )
 	}
 
 	return collectedLayers;
-}
-
-
-
-/*		------------------------------------------------
-
-		This was generated using the script listener,
-		it will convert the RGB channels into a matte.
-
-		------------------------------------------------
-*/
-function convertColorToMask( )
-{
-  // Load Red channel to selection
-  doc.selection.load( doc.channels.getByName('Red') );
-
-	// Create mask from selection
-	var idMk = charIDToTypeID( "Mk  " );
-		var desc156 = new ActionDescriptor();
-		var idNw = charIDToTypeID( "Nw  " );
-		var idChnl = charIDToTypeID( "Chnl" );
-		desc156.putClass( idNw, idChnl );
-		var idAt = charIDToTypeID( "At  " );
-			var ref77 = new ActionReference();
-			var idChnl = charIDToTypeID( "Chnl" );
-			var idChnl = charIDToTypeID( "Chnl" );
-			var idMsk = charIDToTypeID( "Msk " );
-			ref77.putEnumerated( idChnl, idChnl, idMsk );
-		desc156.putReference( idAt, ref77 );
-		var idUsng = charIDToTypeID( "Usng" );
-		var idUsrM = charIDToTypeID( "UsrM" );
-		var idRvlS = charIDToTypeID( "RvlS" );
-		desc156.putEnumerated( idUsng, idUsrM, idRvlS );
-	executeAction( idMk, desc156, DialogModes.NO );
 }
