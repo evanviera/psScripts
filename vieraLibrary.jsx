@@ -166,3 +166,39 @@ function convertRGBToMask( )
 		desc156.putEnumerated( idUsng, idUsrM, idRvlS );
 	executeAction( idMk, desc156, DialogModes.NO );
 }
+
+
+
+
+/*
+		------------------------------------------------
+
+		Sets the layer label color for SELECTED
+		Options are: 	"Rd  ", "Orng", "Ylw ", "Grn ",
+		"Bl  ", "Vlt ", "Gry ", "None"
+
+		------------------------------------------------
+*/
+function setLabelColor( setTo )
+{
+	var idsetd = charIDToTypeID( "setd" );
+		var desc85 = new ActionDescriptor();
+		var idnull = charIDToTypeID( "null" );
+			var ref33 = new ActionReference();
+			var idLyr = charIDToTypeID( "Lyr " );
+			var idOrdn = charIDToTypeID( "Ordn" );
+			var idTrgt = charIDToTypeID( "Trgt" );
+			ref33.putEnumerated( idLyr, idOrdn, idTrgt );
+		desc85.putReference( idnull, ref33 );
+		var idT = charIDToTypeID( "T   " );
+			var desc86 = new ActionDescriptor();
+			var idClr = charIDToTypeID( "Clr " );
+			var idClr = charIDToTypeID( "Clr " );
+			var idRd = charIDToTypeID( setTo );
+			desc86.putEnumerated( idClr, idClr, idRd );
+		var idLyr = charIDToTypeID( "Lyr " );
+		desc85.putObject( idT, idLyr, desc86 );
+	executeAction( idsetd, desc85, DialogModes.NO );
+
+	return;
+}

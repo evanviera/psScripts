@@ -1,5 +1,5 @@
 <javascriptresource>
-  <name>Organize Folders</name>
+  <name>Organize Folders and Rename</name>
   <about>
       This will color code nested folders to help readiblity.
       It will also rename layers.
@@ -41,11 +41,16 @@ function colorGroupTags( __parent )
       var currentLayer = __parent.layers[ i ];
       var visible = currentLayer.visible;
 
-      if ( currentLayer.typename != "ArtLayer" )
+      if ( currentLayer.typename == "ArtLayer" )
+      {
+        currentLayer.name = "LYR_" + i;
+      }
+      else
       {
   			doc.activeLayer = currentLayer;
   			setLabelColor( idColors[ lastColor ] );
   			lastColor = (lastColor + 1) % idColors.length;
+  			currentLayer.name = "GRP_" + i;
 
         colorGroupTags( currentLayer );
       }
