@@ -13,17 +13,6 @@
 
 #include "vieraLibrary.jsx"
 
-/*
-
-    NOTE: Running this currently makes all layers visible. This script needs
-    to catch whether they are visible or are not and set them back to as they
-    were. This could be done with a 2D array where the visiblity is recorded
-    next to the index number.
-
-*/
-
-
-
 var doc = activeDocument;
 var idColors = [ "Rd  ", "Orng", "Ylw ", "Grn ", "Bl  ", "Vlt ", "Gry " ];
 var lastColor = 0;
