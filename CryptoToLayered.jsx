@@ -23,9 +23,12 @@ var cryptoLayers = getAllCrypoLayers( );
 
 // Find "RenderLayer.Combined.RGBA" and store as variable rgbLayer
 // Disable the visibility for all layers. Important for the RGB to A function.
+
+var RgbCombined = new RegExp( /Combined.RGBA/gim );
+
 for ( var i = 0; i < doc.layers.length; i++ )
 {
-	if ( doc.layers[ i ].name == "RenderLayer.Combined.RGBA" ) rgbLayer = doc.layers[ i ];
+	if ( doc.layers[ i ].name.match( RgbCombined ) ) rgbLayer = doc.layers[ i ];
 	doc.layers[ i ].visible = false;
 }
 
@@ -82,7 +85,7 @@ function applyCryptoToRgbLayer( __cryptoLayer )
 function getAllCrypoLayers( )
 {
 	var collectedLayers = [];
-	var regEx = new RegExp( /CryptoObject/gim );
+	var regEx = new RegExp( /Crypto/gim );
 
 	for ( var i = 0; i < doc.layers.length; i++ )
 	{
