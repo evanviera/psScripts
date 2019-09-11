@@ -56,13 +56,13 @@ function collectLayersBelow( __index, __parent )
     for ( var i = __index; i < __parent.layers.length; i++ ) {
 
 		var currentLayer = __parent.layers[ i ];
-        if ( currentLayer.typename == "ArtLayer" ) {
+		if ( currentLayer.typename == "ArtLayer" ) {
 			if ( currentLayer.visible == true ) {
 				if ( currentLayer.kind == LayerKind.NORMAL ) {
 					collectedLayers.push( currentLayer );
 				}
 			}
-        }
+    }
 
 		else {
             collectLayersBelow( 0, currentLayer );
