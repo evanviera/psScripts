@@ -28,6 +28,8 @@ collectedLayers.shift( ); // Remove first layer from array, which is the layer t
 proofCopy( );
 copyAndMergeSelectedLayer( );
 selectedLayer.remove( );
+
+doc.activeLayer = doc.layers[0];
 proofPaste( );
 
 //	****************************************
