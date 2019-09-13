@@ -11,7 +11,11 @@
 var doc = activeDocument;
 var selectedLayer = doc.activeLayer;
 
-doc.selection.load( doc.channels.getByName('Red') );
+var alertString = "" + selectedLayer.typename + ",  " + selectedLayer.kind;
+
+alert( alertString );
+
+// doc.selection.load( doc.channels.getByName('Red') );
 
 /*
 
