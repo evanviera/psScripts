@@ -23,7 +23,6 @@ layerIndex = getIndex( );
 
 if ( selectedLayer.grouped == true ) collectClippingLayers( );
 else collectLayersBelow( layerIndex, layerParent );
-collectedLayers.shift( ); // Remove first layer from array, which is the layer to be copied.
 
 proofCopy( );
 copyAndMergeSelectedLayer( );
@@ -53,7 +52,7 @@ function getIndex( )
 //	****************************************
 function collectLayersBelow( __index, __parent )
 {
-    for ( var i = __index; i < __parent.layers.length; i++ ) {
+	for ( var i = __index; i < __parent.layers.length; i++ ) {
 
 		var currentLayer = __parent.layers[ i ];
 		if ( currentLayer.typename == "ArtLayer" ) {
@@ -65,8 +64,8 @@ function collectLayersBelow( __index, __parent )
     }
 
 		else {
-            collectLayersBelow( 0, currentLayer );
-        }
+      collectLayersBelow( 0, currentLayer );
+    }
 	}
 }
 
@@ -86,7 +85,10 @@ function collectClippingLayers( )
 		// If current layer is a folder ("grouped") then collectLayersBelow
 		if ( currentLayer.typename == "LayerSet" ) collectLayersBelow( 0, currentLayer );
 
-		if ( currentLayer.typename == "ArtLayer" ) collectedLayers.push( currentLayer );
+		if ( ( currentLayer.typename == "ArtLayer" )
+			&& ( currentLayer.kind == LayerKind.NORMAL ) ) {
+			collectedLayers.push( currentLayer );
+		}
 		i++;
 	}
 }
