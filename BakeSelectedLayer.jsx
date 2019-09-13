@@ -55,23 +55,19 @@ function collectLayersBelow( __index, __parent )
 	for ( var i = __index; i < __parent.layers.length; i++ ) {
 
 		var currentLayer = __parent.layers[ i ];
-		if ( currentLayer.typename == "ArtLayer" ) {
-			if ( currentLayer.visible == true ) {
-				if ( currentLayer.kind == LayerKind.NORMAL ) {
-					collectedLayers.push( currentLayer );
-				}
-			}
-    }
+		var isvalid = validateLayer( currentLayer );
 
-		else {
-      collectLayersBelow( 0, currentLayer );
-    }
+		if ( currentLayer.typename == "LayerSet" ) {
+			collectLayersBelow( 0, currentLayer );
+		} else if ( isvalid == true ) {
+			collectedLayers.push( currentLayer );
+		}
 	}
 }
 
 
 //	****************************************
-// 	Collects all layers underneat into array
+// 	Collects all clipping layers of a group
 //	****************************************
 function collectClippingLayers( )
 {
@@ -81,14 +77,14 @@ function collectClippingLayers( )
 	while ( currentLayer.grouped == true )
 	{
 		currentLayer = layerParent.layers[ i ];
+		var isvalid = validateLayer( currentLayer );
 
-		// If current layer is a folder ("grouped") then collectLayersBelow
-		if ( currentLayer.typename == "LayerSet" ) collectLayersBelow( 0, currentLayer );
-
-		if ( ( currentLayer.typename == "ArtLayer" )
-			&& ( currentLayer.kind == LayerKind.NORMAL ) ) {
+		if ( currentLayer.typename == "LayerSet" ) {
+			collectLayersBelow( 0, currentLayer );
+		} else if ( isvalid == true ) {
 			collectedLayers.push( currentLayer );
 		}
+
 		i++;
 	}
 }
@@ -122,4 +118,21 @@ function proofPaste( )
 	proof.name = "PROOF";
 	proof.move(doc.layers[0], ElementPlacement.PLACEBEFORE);
 	proof.visible = false;
+}
+
+
+//	**********************************************
+// 	Layer is ArtLayer, Visible, and Pixel (Normal)
+//	**********************************************
+function validateLayer( __layer )
+{
+	if ( __layer.kind == LayerKind.NORMAL ) {
+		if ( __layer.typename == "ArtLayer" ) {
+			if ( __layer.visible == true) {
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
