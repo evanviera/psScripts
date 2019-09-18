@@ -31,9 +31,15 @@ selectedLayer.remove( );
 doc.activeLayer = doc.layers[0];
 proofPaste( );
 
-//	****************************************
-// 	Returns the index of the selected layer
-//	****************************************
+
+
+/*
+		-------------------------------------------------------------
+
+						Returns the index of the selected layer
+
+		-------------------------------------------------------------
+*/
 function getIndex( )
 {
 	var index = 0;
@@ -47,9 +53,13 @@ function getIndex( )
 
 
 
-//	****************************************
-// 	Collects all layers below into array
-//	****************************************
+/*
+		-------------------------------------------------------------
+
+						Collects all layers below into array
+
+		-------------------------------------------------------------
+*/
 function collectLayersBelow( __index, __parent )
 {
 	for ( var i = __index; i < __parent.layers.length; i++ ) {
@@ -61,14 +71,20 @@ function collectLayersBelow( __index, __parent )
 			collectLayersBelow( 0, currentLayer );
 		} else if ( isvalid == true ) {
 			collectedLayers.push( currentLayer );
+			currentLayer.allLocked = false;
 		}
 	}
 }
 
 
-//	****************************************
-// 	Collects all clipping layers of a group
-//	****************************************
+
+/*
+		-------------------------------------------------------------
+
+						Collects all clipping layers of a group
+
+		-------------------------------------------------------------
+*/
 function collectClippingLayers( )
 {
 	var i = layerIndex;
@@ -89,22 +105,34 @@ function collectClippingLayers( )
 	}
 }
 
-//	****************************************
-// 	Executes actions for all layers in array
-//	****************************************
+
+
+/*
+		-------------------------------------------------------------
+
+						Executes actions for all layers in array
+
+		-------------------------------------------------------------
+*/
 function copyAndMergeSelectedLayer( )
 {
 	for ( var i = 0; i < collectedLayers.length; i++ )
 	{
 		var duplicatedLayer = selectedLayer.duplicate( collectedLayers[i], ElementPlacement.PLACEBEFORE );
-		if (duplicatedLayer.grouped == false) duplicatedLayer.grouped = true;
+		if ( duplicatedLayer.grouped == false ) duplicatedLayer.grouped = true;
 		duplicatedLayer.merge( );
 	}
 }
 
-//	****************************************
-// 	Proof - Copy and Paste
-//	****************************************
+
+
+/*
+		-------------------------------------------------------------
+
+						Proof - Copy and Paste
+
+		-------------------------------------------------------------
+*/
 function proofCopy( )
 {
 	doc.selection.selectAll( );
@@ -121,9 +149,14 @@ function proofPaste( )
 }
 
 
-//	**********************************************
-// 	Layer is ArtLayer, Visible, and Pixel (Normal)
-//	**********************************************
+
+/*
+		-------------------------------------------------------------
+
+						Layer is ArtLayer, Visible, and Pixel (Normal)
+
+		-------------------------------------------------------------
+*/
 function validateLayer( __layer )
 {
 	if ( __layer.kind == LayerKind.NORMAL ) {
