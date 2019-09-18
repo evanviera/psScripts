@@ -162,7 +162,9 @@ function validateLayer( __layer )
 	if ( __layer.kind == LayerKind.NORMAL ) {
 		if ( __layer.typename == "ArtLayer" ) {
 			if ( __layer.visible == true) {
-				return true;
+				if ( __layer.blendMode == BlendMode.NORMAL ) {
+					return true;
+				}
 			}
 		}
 	}
