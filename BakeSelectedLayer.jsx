@@ -28,8 +28,8 @@ proofCopy( );
 copyAndMergeSelectedLayer( );
 selectedLayer.remove( );
 
-doc.activeLayer = doc.layers[0];
-proofPaste( );
+doc.activeLayer = doc.layers[ 0 ];
+proofPaste( );		v
 
 
 
@@ -136,15 +136,15 @@ function copyAndMergeSelectedLayer( )
 function proofCopy( )
 {
 	doc.selection.selectAll( );
-	doc.selection.copy(true);
+	doc.selection.copy( true );
 }
 
 function proofPaste( )
 {
-	var proof = doc.paste(true);
+	var proof = doc.paste( true );
 
 	proof.name = "PROOF";
-	proof.move(doc.layers[0], ElementPlacement.PLACEBEFORE);
+	proof.move( doc.layers[ 0 ], ElementPlacement.PLACEBEFORE );
 	proof.visible = false;
 }
 
