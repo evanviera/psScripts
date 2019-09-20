@@ -29,7 +29,7 @@ copyAndMergeSelectedLayer( );
 selectedLayer.remove( );
 
 doc.activeLayer = doc.layers[ 0 ];
-proofPaste( );		v
+proofPaste( );
 
 
 
