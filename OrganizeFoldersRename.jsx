@@ -32,7 +32,7 @@ function colorGroupTags( __parent )
 
       if ( currentLayer.typename == "ArtLayer" )
       {
-        currentLayer.name = "LYR_" + i;
+        currentLayer.name = "LYR_" + i; // + "_" + currentLayer.blendMode;
       }
       else
       {

@@ -1,3 +1,21 @@
+/*
+		-------------------------------------------------------------
+
+						REVISIONS
+
+						When an adjustment layer is baked that is also
+						a clipping layer, it will break the clipping
+						heierachy.
+
+							Solution: Iterate through all layers, collect
+							their relevant information and set it back
+							once done.
+
+		-------------------------------------------------------------
+*/
+
+
+
 <javascriptresource>
 	<name>Bake Selected Layer</name>
 	<about>
