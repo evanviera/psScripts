@@ -59,7 +59,7 @@ function collectLayersBelow( __index, __parent )
 
 //	---------------------------------------------------------------------------
 //
-// 	Collects all layers underneat into array
+// 	Collects all layers underneath into array
 //
 //	---------------------------------------------------------------------------
 function collectClippingLayers( __index, __parent )
