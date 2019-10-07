@@ -169,6 +169,21 @@ function convertRGBToMask( )
 
 
 
+/*
+		------------------------------------------------
+
+		Checks to see if active layer has a layer mask
+
+		------------------------------------------------
+*/
+function hasLayerMask() {
+   var ref = new ActionReference();
+   ref.putEnumerated( stringIDToTypeID( "layer" ), charIDToTypeID( "Ordn" ), charIDToTypeID( "Trgt" ));
+   var Mask= executeActionGet( ref );
+   return Mask.hasKey(charIDToTypeID('Usrs'));
+};
+
+
 
 /*
 		------------------------------------------------
