@@ -14,16 +14,33 @@
 
 var doc = activeDocument;
 var selectedLayer = doc.activeLayer;
-var layerParent = selectedLayer.parent;
 
-if ( selectedLayer.typename == "LayerSet" ) {
-  if ( hasLayerMask( selectedLayer ) ) {
-    alert( "Yes this is valid!" );
+var collectedLayers = [ ];
+
+
+
+if ( selectedLayer.typename == "LayerSet" )
+{
+  if ( hasLayerMask( selectedLayer ) )
+	{
+		collectedLayers = collectLayersBelow( 0, selectedLayer );
   }
-  else {
+  else
+	{
     alert( "Selected Layer has no layer mask" )
   }
 }
-else {
+else
+{
   alert( "Selected Layer is not a Layer Set" );
+}
+
+
+
+layerMaskToSelection( );
+doc.selection.invert( );
+
+for ( var i = 0; i < collectedLayers.length; i++ )
+{
+	collectedLayers[ i ].clear( );
 }
