@@ -14,9 +14,10 @@
 
 var doc = activeDocument;
 var selectedLayer = doc.activeLayer;
-
 var collectedLayers = [ ];
+var bounds = [ 0, 0, doc.width, doc.height ];
 
+doc.crop( bounds );
 
 
 if ( selectedLayer.typename == "LayerSet" )
@@ -38,13 +39,10 @@ else
 }
 
 
-
 for ( var i = 0; i < collectedLayers.length; i++ )
 {
 	doc.activeLayer =	collectedLayers[ i ];
 	doc.selection.clear( );
 }
 
-var bounds = [ 0, 0, doc.width, doc.height ];
-
-doc.crop( bounds );
+doc.selection.deselect( );

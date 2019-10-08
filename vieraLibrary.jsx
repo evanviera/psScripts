@@ -1,13 +1,13 @@
 /*
 		---------------------------------------------------------------------------
 
-		Various functions use throughout these PS scripts. Be sure
-		to #include this library when using them.
+		Various functions use throughout these PS scripts.
 
 		Evan Viera -- hello@evanviera.com
 
 		---------------------------------------------------------------------------
 */
+
 
 
 /*
@@ -25,23 +25,23 @@ function validateLayer( __layer )
 		{
 			if ( __layer.visible == true)
 			{
-				if ( __layer.blendMode == BlendMode.NORMAL )
-				{
 					return true;
-				}
 			}
 		}
 	}
-
 	return false;
 }
 
 
-//	---------------------------------------------------------------------------
-//
-// 	Returns the index of the selected layer
-//
-//	---------------------------------------------------------------------------
+
+
+/*
+		-------------------------------------------------------------
+
+						Returns index of layer
+
+		-------------------------------------------------------------
+*/
 function getIndex( __selectedLayer )
 {
 	var index = 0;
@@ -57,14 +57,14 @@ function getIndex( __selectedLayer )
 /*
 		------------------------------------------------
 
-		Collect Layers Below
-		Recursively collects all layers below and
-		returns an array.
+		Recursively collects nested layers into an array.
 
 		------------------------------------------------
 */
 function collectLayersBelow( __index, __parent )
 {
+	var _collectedLayers = [ ];
+
 	for ( var i = __index; i < __parent.layers.length; i++ )
 	{
 		var currentLayer = __parent.layers[ i ];
@@ -75,11 +75,11 @@ function collectLayersBelow( __index, __parent )
 			collectLayersBelow( 0, currentLayer );
 		} else if ( isvalid == true )
 		{
-			collectedLayers.push( currentLayer );
+			_collectedLayers.push( currentLayer );
 			currentLayer.allLocked = false;
 		}
 	}
-	return collectedLayers;
+	return _collectedLayers;
 }
 
 
@@ -87,33 +87,32 @@ function collectLayersBelow( __index, __parent )
 /*
 		------------------------------------------------
 
-		Collect Clipping Layers
-		Collects all layers below that are a part of
-		a clipping layer hierarchy and retuns an array.
+		Collects clipping layers into an array If it
+		finds an layerset, then CollectLayersBelow.
 
 		------------------------------------------------
 */
 function collectClippingLayers( __index, __parent )
 {
+	var _collectedLayers = [ ];
 	var currentLayer = __parent.layers[ __index ];
-  var collectedLayers = [];
 
 	while ( currentLayer.grouped == true )
 	{
-		// If current layer is a folder ("grouped") then collectLayersBelow
+		// If current layer is a folder (LayerSet) then collectLayersBelow
 		if ( currentLayer.typename == "LayerSet" )
 		{
 			var layersFromSet = collectLayersBelow( 0, currentLayer );
-			collectedLayers.push( layersFromSet );
+			_collectedLayers.push( layersFromSet );
 		}
 		else if ( currentLayer.typename == "ArtLayer" )
 		{
-			collectedLayers.push( currentLayer );
+			_collectedLayers.push( currentLayer );
 		}
 		currentLayer = layerParent.layers[ ++__index ];
 	}
 
-  return collectedLayers;
+  return _collectedLayers;
 }
 
 
@@ -127,8 +126,8 @@ function copyAndMergeSelectedLayer( __selectedLayer, __collectedLayers )
 {
 	for ( var i = 0; i < __collectedLayers.length; i++ )
 	{
-		var duplicatedLayer = __selectedLayer.duplicate( __collectedLayers[ i ], ElementPlacement.PLACEBEFORE );
-		// duplicatedLayer.grouped = ( duplicatedLayer.grouped == false ) ? true : true;
+		var duplicatedLayer = __selectedLayer.duplicate( __collectedLayers[ i ],
+														ElementPlacement.PLACEBEFORE );
 		duplicatedLayer.grouped = true;
 		duplicatedLayer.merge( );
 	}
@@ -207,12 +206,14 @@ function convertRGBToMask( )
 
 		------------------------------------------------
 */
-function hasLayerMask() {
-   var ref = new ActionReference();
-   ref.putEnumerated( stringIDToTypeID( "layer" ), charIDToTypeID( "Ordn" ), charIDToTypeID( "Trgt" ));
-   var Mask= executeActionGet( ref );
-   return Mask.hasKey(charIDToTypeID('Usrs'));
-};
+function hasLayerMask( )
+{
+   var ref = new ActionReference( );
+   ref.putEnumerated( stringIDToTypeID( "layer" ),
+	 		charIDToTypeID( "Ordn" ), charIDToTypeID( "Trgt" ) );
+   var Mask = executeActionGet( ref );
+   return Mask.hasKey( charIDToTypeID( 'Usrs' ) );
+}
 
 
 
