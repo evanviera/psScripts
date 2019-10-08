@@ -10,7 +10,31 @@
 */
 
 
+/*
+		-------------------------------------------------------------
 
+						Layer is the kind of layer you paint on
+
+		-------------------------------------------------------------
+*/
+function validateLayer( __layer )
+{
+	if ( __layer.kind == LayerKind.NORMAL )
+	{
+		if ( __layer.typename == "ArtLayer" )
+		{
+			if ( __layer.visible == true)
+			{
+				if ( __layer.blendMode == BlendMode.NORMAL )
+				{
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
 
 
 //	---------------------------------------------------------------------------
@@ -30,38 +54,45 @@ function getIndex( __selectedLayer )
 
 
 
-//	---------------------------------------------------------------------------
-//
-// 	Collects all layers below into array
-//
-//	---------------------------------------------------------------------------
+/*
+		------------------------------------------------
+
+		Collect Layers Below
+		Recursively collects all layers below and
+		returns an array.
+
+		------------------------------------------------
+*/
 function collectLayersBelow( __index, __parent )
 {
-    var collectedLayers = [];
-    for ( var i = __index; i < __parent.layers.length; i++ ) {
-
+	for ( var i = __index; i < __parent.layers.length; i++ )
+	{
 		var currentLayer = __parent.layers[ i ];
-        if ( ( currentLayer.typename == "ArtLayer" )
-						&& ( currentLayer.visible == true )
-						&& ( currentLayer.kind == LayerKind.NORMAL ) )
-				{
-					collectedLayers.push( currentLayer );
-				}
-				else
-				{
-            collectLayersBelow( 0, currentLayer );
-        }
+		var isvalid = validateLayer( currentLayer );
+
+		if ( currentLayer.typename == "LayerSet" )
+		{
+			collectLayersBelow( 0, currentLayer );
+		} else if ( isvalid == true )
+		{
+			collectedLayers.push( currentLayer );
+			currentLayer.allLocked = false;
+		}
 	}
-  return collectedLayers;
+	return collectedLayers;
 }
 
 
 
-//	---------------------------------------------------------------------------
-//
-// 	Collects all layers underneath into array
-//
-//	---------------------------------------------------------------------------
+/*
+		------------------------------------------------
+
+		Collect Clipping Layers
+		Collects all layers below that are a part of
+		a clipping layer hierarchy and retuns an array.
+
+		------------------------------------------------
+*/
 function collectClippingLayers( __index, __parent )
 {
 	var currentLayer = __parent.layers[ __index ];
@@ -182,6 +213,35 @@ function hasLayerMask() {
    var Mask= executeActionGet( ref );
    return Mask.hasKey(charIDToTypeID('Usrs'));
 };
+
+
+
+/*
+		------------------------------------------------
+
+		Loads the Layer Mask of the current layer
+
+		------------------------------------------------
+*/
+function layerMaskToSelection( )
+{
+	var idsetd = charIDToTypeID( "setd" );
+	    var desc14 = new ActionDescriptor();
+	    var idnull = charIDToTypeID( "null" );
+	        var ref8 = new ActionReference();
+	        var idChnl = charIDToTypeID( "Chnl" );
+	        var idfsel = charIDToTypeID( "fsel" );
+	        ref8.putProperty( idChnl, idfsel );
+	    desc14.putReference( idnull, ref8 );
+	    var idT = charIDToTypeID( "T   " );
+	        var ref9 = new ActionReference();
+	        var idChnl = charIDToTypeID( "Chnl" );
+	        var idChnl = charIDToTypeID( "Chnl" );
+	        var idMsk = charIDToTypeID( "Msk " );
+	        ref9.putEnumerated( idChnl, idChnl, idMsk );
+	    desc14.putReference( idT, ref9 );
+	executeAction( idsetd, desc14, DialogModes.NO );
+}
 
 
 
