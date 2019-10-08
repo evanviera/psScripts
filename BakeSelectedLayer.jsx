@@ -30,14 +30,14 @@
 	<enableinfo>true</enableinfo>
 	</javascriptresource>
 
+#include "vieraLibrary.jsx"
+
 var doc = activeDocument;
 var selectedLayer = doc.activeLayer;
 var layerParent = selectedLayer.parent;
 var collectedLayers = [ ];
-var layerIndex = 0;
 
-
-layerIndex = getIndex( );
+var layerIndex = getIndex( selectedLayer );
 
 if ( selectedLayer.grouped == true ) collectClippingLayers( );
 else collectLayersBelow( layerIndex, layerParent );
@@ -50,24 +50,6 @@ doc.activeLayer = doc.layers[ 0 ];
 proofPaste( );
 
 
-
-/*
-		-------------------------------------------------------------
-
-						Returns the index of the selected layer
-
-		-------------------------------------------------------------
-*/
-function getIndex( )
-{
-	var index = 0;
-	while ( layerParent.layers[ index ] != selectedLayer )
-	{
-		index++;
-	}
-
-	return index;
-}
 
 
 
@@ -140,30 +122,6 @@ function copyAndMergeSelectedLayer( )
 		if ( duplicatedLayer.grouped == false ) duplicatedLayer.grouped = true;
 		duplicatedLayer.merge( );
 	}
-}
-
-
-
-/*
-		-------------------------------------------------------------
-
-						Proof - Copy and Paste
-
-		-------------------------------------------------------------
-*/
-function proofCopy( )
-{
-	doc.selection.selectAll( );
-	doc.selection.copy( true );
-}
-
-function proofPaste( )
-{
-	var proof = doc.paste( true );
-
-	proof.name = "PROOF";
-	proof.move( doc.layers[ 0 ], ElementPlacement.PLACEBEFORE );
-	proof.visible = false;
 }
 
 
