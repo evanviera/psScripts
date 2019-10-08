@@ -24,6 +24,8 @@ if ( selectedLayer.typename == "LayerSet" )
   if ( hasLayerMask( selectedLayer ) )
 	{
 		collectedLayers = collectLayersBelow( 0, selectedLayer );
+		layerMaskToSelection( );
+		doc.selection.invert( );
   }
   else
 	{
@@ -37,10 +39,12 @@ else
 
 
 
-layerMaskToSelection( );
-doc.selection.invert( );
-
 for ( var i = 0; i < collectedLayers.length; i++ )
 {
-	collectedLayers[ i ].clear( );
+	doc.activeLayer =	collectedLayers[ i ];
+	doc.selection.clear( );
 }
+
+var bounds = [ 0, 0, doc.width, doc.height ];
+
+doc.crop( bounds );
