@@ -19,19 +19,13 @@
 */
 function validateLayer( __layer )
 {
-	if ( __layer.kind == LayerKind.NORMAL )
-	{
-		if ( __layer.typename == "ArtLayer" )
-		{
-			if ( __layer.visible == true)
-			{
+	if ( ( __layer.kind == LayerKind.NORMAL ) &&
+			 ( __layer.typename == "ArtLayer" ) &&
+			 ( __layer.visible == true) ) {
 					return true;
-			}
-		}
 	}
 	return false;
 }
-
 
 
 
