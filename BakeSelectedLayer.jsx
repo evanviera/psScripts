@@ -1,3 +1,18 @@
+<javascriptresource>
+	<name>Bake Selected Layer</name>
+	<about>
+			This will bake the selected layer onto all the layers below.
+			This is best used for adjustment layers, but it can be a
+			layer of any type.
+			Evan Viera
+	</about>
+	<menu>filter</menu>
+	<category>Viera</category>
+	<type>automate</type>
+	<enableinfo>true</enableinfo>
+</javascriptresource>
+
+
 /*
 		-------------------------------------------------------------
 
@@ -14,21 +29,6 @@
 		-------------------------------------------------------------
 */
 
-
-
-<javascriptresource>
-	<name>Bake Selected Layer</name>
-	<about>
-			This will bake the selected layer onto all the layers below.
-			This is best used for adjustment layers, but it can be a
-			layer of any type.
-			Evan Viera
-	</about>
-	<menu>filter</menu>
-	<category>Viera</category>
-	<type>automate</type>
-	<enableinfo>true</enableinfo>
-	</javascriptresource>
 
 #include "vieraLibrary.jsx"
 
@@ -48,6 +48,7 @@ selectedLayer.remove( );
 
 doc.activeLayer = doc.layers[ 0 ];
 proofPaste( );
+
 
 
 
@@ -118,7 +119,8 @@ function copyAndMergeSelectedLayer( )
 {
 	for ( var i = 0; i < collectedLayers.length; i++ )
 	{
-		var duplicatedLayer = selectedLayer.duplicate( collectedLayers[i], ElementPlacement.PLACEBEFORE );
+		var duplicatedLayer = selectedLayer.duplicate( collectedLayers[i],
+													ElementPlacement.PLACEBEFORE );
 		if ( duplicatedLayer.grouped == false ) duplicatedLayer.grouped = true;
 		duplicatedLayer.merge( );
 	}
