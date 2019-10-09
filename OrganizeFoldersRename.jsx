@@ -24,24 +24,29 @@ colorGroupTags( doc );
 //	****************************************
 function colorGroupTags( __parent )
 {
+    var refLayer = new RegExp( /_REF_/gim );
+
     for ( var i = 0; i < __parent.layers.length; i++ )
     {
 
       var currentLayer = __parent.layers[ i ];
       var visible = currentLayer.visible;
 
-      if ( currentLayer.typename == "ArtLayer" )
+      if ( !currentLayer.name.match( refLayer ) )
       {
-        currentLayer.name = "LYR_" + i; // + "_" + currentLayer.blendMode;
-      }
-      else
-      {
-  			doc.activeLayer = currentLayer;
-  			setLabelColor( idColors[ lastColor ] );
-  			lastColor = (lastColor + 1) % idColors.length;
-  			currentLayer.name = "GRP_" + i;
+        if ( currentLayer.typename == "ArtLayer" )
+        {
+          currentLayer.name = "LYR_" + i; // + "_" + currentLayer.blendMode;
+        }
+        else
+        {
+    			doc.activeLayer = currentLayer;
+    			setLabelColor( idColors[ lastColor ] );
+    			lastColor = (lastColor + 1) % idColors.length;
+    			currentLayer.name = "GRP_" + i;
 
-        colorGroupTags( currentLayer );
+          colorGroupTags( currentLayer );
+        }
       }
 
       currentLayer.visible = visible;
