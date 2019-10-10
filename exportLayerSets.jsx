@@ -8,18 +8,20 @@
 	<enableinfo>true</enableinfo>
 	</javascriptresource>
 
-var doc = activeDocument;
+// var doc = activeDocument;
+//
+// for ( var i = 0; i < doc.layers.length; i++ )
+// {
+//   if ( doc.layers[ i ].typename == "LayerSet" )
+// 	{
+// 		alert( doc.layers[ i ].name );
+// 	}
+// }
 
-for ( var i = 0; i < doc.layers.length; i++ )
-{
-  if ( doc.layers[ i ].typename == "LayerSet" )
-	{
-		alert( doc.layers[ i ].name );
-	}
-}
 
 
-/*
+var savePath = app.activeDocument.path + "/png/";
+alert( savePath );
 
 app.displayDialogs = DialogModes.NO;
 
@@ -40,15 +42,14 @@ if (hasSelection) {
     var h = app.activeDocument.selection.bounds[3];
     docRef = app.documents.add(w, h);
     docRef.paste();
+		docRef.trim();
 } else {
     docRef = app.activeDocument;
 }
 var file = File.saveDialog("Export as PNG to...");
 if (file && ((file.exists && confirm("Overwrite " + file +"?")) || !file.exists)) {
-    docRef.saveAs(file, pngSaveOptions, !hasSelection, Extension.LOWERCASE);
+    docRef.saveAs( new File( savePath+"asddf.png" ), pngSaveOptions, !hasSelection, Extension.LOWERCASE);
     if (hasSelection) {
     docRef.close(SaveOptions.DONOTSAVECHANGES);
     }
 }
-
-*/
