@@ -28,6 +28,13 @@ var refLayer = new RegExp( /_REF_/gim );
 var docName = new String( doc.name );
 		docName = docName.slice( 0 , -4 );
 
+var outputPngPath = new Folder( doc.path + "/PNG/" );
+var outputJpegPath = new Folder( doc.path + "/JPEG/" );
+
+if ( !outputPngPath.exists ) outputPngPath.create( );
+if ( !outputJpegPath.exists ) outputJpegPath.create( );
+
+
 for ( var i = doc.layers.length - 1; i >= 0; i-- )
 {
   if ( doc.layers[ i ].typename == "LayerSet" )
@@ -46,8 +53,12 @@ for ( var i = doc.layers.length - 1; i >= 0; i-- )
 				var grpName = new String( doc.layers[ i ].name );
 						grpName = grpName.slice( 3 );
 
-				var outputPath = new File( 	doc.path + "/png/" + docName +
+				var outputPngFile = new File( 	doc.path + "/png/" + docName +
 																		grpName + ".png" );
+
+				var outputJpegFile = new File( 	doc.path + "/jpeg/" + docName +
+																		grpName + ".jpeg" );
+
 
 				doc.selection.copy( true );
 				var w = doc.selection.bounds[ 2 ];
@@ -57,8 +68,8 @@ for ( var i = doc.layers.length - 1; i >= 0; i-- )
 				docRef.trim( );
 				docRef.trim( );
 
-				docRef.saveAs( outputPath, pngSaveOptions, true, Extension.LOWERCASE );
-				docRef.saveAs( outputPath, jpegSaveOptions, true, Extension.LOWERCASE );
+				docRef.saveAs( outputPngFile, pngSaveOptions, true, Extension.LOWERCASE );
+				docRef.saveAs( outputJpegFile, jpegSaveOptions, true, Extension.LOWERCASE );
 				docRef.close( SaveOptions.DONOTSAVECHANGES );
 			}
 		}
