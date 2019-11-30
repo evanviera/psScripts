@@ -65,8 +65,8 @@ for ( var i = doc.layers.length - 1; i >= 0; i-- )
 				var h = doc.selection.bounds[ 3 ];
 				docRef = app.documents.add( w, h );
 				docRef.paste( );
-				docRef.trim( );
-				docRef.trim( );
+				docRef.trim( TrimType.TOPLEFT, true, true, true, true );
+				docRef.trim( TrimType.BOTTOMRIGHT, true, true, true, true );
 
 				docRef.saveAs( outputPngFile, pngSaveOptions, true, Extension.LOWERCASE );
 				docRef.saveAs( outputJpegFile, jpegSaveOptions, true, Extension.LOWERCASE );
