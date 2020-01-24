@@ -7,7 +7,7 @@
 	<enableinfo>true</enableinfo>
 	</javascriptresource>
 
-#include "vieraLibrary.jsx"
+#include "../vieraLibrary.jsx"
 
 var doc = activeDocument;
 

@@ -8,7 +8,7 @@
 	<enableinfo>true</enableinfo>
 	</javascriptresource>
 
-#include "vieraLibrary.jsx"
+#include "../vieraLibrary.jsx"
 
 app.displayDialogs = DialogModes.NO;
 
