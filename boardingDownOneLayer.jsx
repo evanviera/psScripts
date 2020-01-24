@@ -15,7 +15,6 @@ var index = getIndex( doc.activeLayer );
 
 if ( index != doc.layers.length - 1 )
 {
-	// activeLyr.visible = !activeLyr.visible;
 	doc.activeLayer.visible = false;
 	++index;
 	doc.activeLayer = doc.layers[ index ];
