@@ -1,5 +1,5 @@
 <javascriptresource>
-	<name>Export Top-level Layer Sets ( Color Scripts )</name>
+	<name>Boarding -- Export Top-level Layer Sets ( Boards )</name>
 	<about>
 			This will export top level
       Layer-sets.
