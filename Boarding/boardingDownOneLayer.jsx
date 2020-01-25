@@ -27,6 +27,12 @@ doShit( );
 
 function doShit( )
 {
+	// If at the very bottom of the document, return.
+	if ( ( sel == len ) && ( getIndex( grp ) == ( grp.parent.layers.length - 1 ) ) )
+	{
+		return;
+	}
+
 	// If at the bottom of the layer stack in a group.
 	if ( sel == len )
 	{
