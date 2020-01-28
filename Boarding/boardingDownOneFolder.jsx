@@ -17,7 +17,6 @@ if ( doc.activeLayer.parent != doc )
 	getParent( );
 }
 
-
 doShit( );
 
 
