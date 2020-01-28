@@ -59,8 +59,8 @@ function doShit( )
 	}
 
 	// Skip BG layers by recussing
-	if ( grp.layers[ sel ].name.match( bgl ) ||
-		 grp.layers[ sel ].name.match( bar ) )
+	if ( ( grp.layers[ sel ].name.match( bgl ) ) ||
+		 ( grp.layers[ sel ].name.match( bar ) ) )
 	{
 		doc.activeLayer = grp.layers[ sel ];
 		doShit( );
