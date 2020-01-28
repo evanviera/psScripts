@@ -11,6 +11,7 @@
 
 // Create tag for layers with BG
 var bgl = new RegExp( /BG/gim );
+var bar = new RegExp( /Bar/gim );
 
 // Get doc
 var doc = activeDocument;
@@ -58,7 +59,8 @@ function doShit( )
 	}
 
 	// Skip BG layers by recussing
-	if ( grp.layers[ sel ].name.match( bgl ) )
+	if ( grp.layers[ sel ].name.match( bgl ) ||
+		 grp.layers[ sel ].name.match( bar ) )
 	{
 		doc.activeLayer = grp.layers[ sel ];
 		doShit( );
