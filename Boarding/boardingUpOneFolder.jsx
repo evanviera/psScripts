@@ -26,17 +26,14 @@ function doShit ( )
 	// Get position of folder in stack.
 	var sel = getIndex( doc.activeLayer );
 
-	// Return if at the top of the stackv
-	if ( sel == 0 )
-	{
-		return;
-	}
-
 	// Disable visibility
 	doc.activeLayer.visible = false;
 
+	// Increment and clamp to document length
+	sel = Math.max( sel - 1, 0 );
+
 	// Change active layer
-	doc.activeLayer = doc.layers[ --sel ];
+	doc.activeLayer = doc.layers[ sel ];
 
 	// Enable visibility
 	doc.activeLayer.visible = true;
