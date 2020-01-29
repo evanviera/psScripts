@@ -12,10 +12,7 @@
 var doc = activeDocument;
 
 // Go all the way up on the heierachy.
-if ( doc.activeLayer.parent != doc )
-{
-	getParent( );
-}
+getParent( );
 
 doShit( );
 
