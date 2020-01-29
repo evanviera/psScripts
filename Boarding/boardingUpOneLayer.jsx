@@ -9,9 +9,8 @@
 
 #include "../vieraLibrary.jsx"
 
-// Create tag for layers with BG
-var bgl = new RegExp( /BG/gim );
-var bar = new RegExp( /Bar/gim );
+// Create tag for layers named BG or Bar
+var skip = new RegExp( /BG|Bar/gim );
 
 // Get doc
 var doc = activeDocument;
@@ -55,14 +54,12 @@ function doShit( )
 	else
 	{
 		// Increment selection
-		--sel;
+		sel--;
 	}
 
-	// Skip BG layers by recussing
-	if ( ( grp.layers[ sel ].name.match( bgl ) ) ||
-		 ( grp.layers[ sel ].name.match( bar ) ) )
+	// Skip layers named BG or Bar
+	if ( grp.layers[ sel ].name.match( skip ) )
 	{
-		doc.activeLayer = grp.layers[ sel ];
 		doShit( );
 	}
 
