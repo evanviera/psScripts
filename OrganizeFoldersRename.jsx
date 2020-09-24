@@ -16,6 +16,7 @@
 var doc = activeDocument;
 var idColors = [ "Rd  ", "Orng", "Ylw ", "Grn ", "Bl  ", "Vlt ", "Gry " ];
 var lastColor = 0;
+var groupNum = 0;
 
 colorGroupTags( doc );
 
@@ -28,7 +29,6 @@ function colorGroupTags( __parent )
 
     for ( var i = 0; i < __parent.layers.length; i++ )
     {
-
       var currentLayer = __parent.layers[ i ];
       var visible = currentLayer.visible;
 
@@ -43,7 +43,8 @@ function colorGroupTags( __parent )
     			doc.activeLayer = currentLayer;
     			setLabelColor( idColors[ lastColor ] );
     			lastColor = (lastColor + 1) % idColors.length;
-    			currentLayer.name = "GRP_" + i;
+    			currentLayer.name = "GRP_" + groupNum;
+          groupNum++;
 
           colorGroupTags( currentLayer );
         }
