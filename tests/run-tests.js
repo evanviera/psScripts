@@ -136,6 +136,33 @@ function testNames(VieraPS) {
     assert.strictEqual(VieraPS.sanitizeFileName(" face:front? "), "face_front_");
 }
 
+function testBakeClippingRestoration() {
+    const source = pixel("Color Balance 1", { kind: "adjustment" });
+    const clipped = pixel("clipped", { grouped: true });
+    const base = pixel("base");
+    const nestedClipped = pixel("nested clipped", { grouped: true });
+    const nestedBase = pixel("nested base");
+    const doc = documentWith([source, clipped, base, group("nested", [nestedClipped, nestedBase])]);
+    const context = { VieraPS: { run() {} } };
+    vm.createContext(context);
+    vm.runInContext(
+        stripExtendScriptDirectives(fs.readFileSync(path.join(root, "BakeSelectedLayer.jsx"), "utf8")),
+        context
+    );
+
+    const snapshot = [];
+    context.captureBakeClipping(doc, source, snapshot);
+    const replacement = pixel("clipped replacement");
+    context.replaceBakeClippingLayer(snapshot, clipped, replacement);
+    nestedClipped.grouped = false;
+    context.restoreBakeClipping(snapshot);
+
+    assert.strictEqual(replacement.grouped, true);
+    assert.strictEqual(nestedClipped.grouped, true);
+    assert.strictEqual(base.grouped, false);
+    assert.strictEqual(nestedBase.grouped, false);
+}
+
 function main() {
     parseAllScripts();
     const VieraPS = loadLibrary();
@@ -143,6 +170,7 @@ function main() {
     testClippingTargets(VieraPS);
     testReferences(VieraPS);
     testNames(VieraPS);
+    testBakeClippingRestoration();
     console.log("All Photoshop script tests passed.");
 }
 
