@@ -1,21 +1,34 @@
 <javascriptresource>
-	<name>Toggle Reference Layers</name>
-	<about>
-			This will toggle the visibility of layers
-      with the prefix _REF_. This is for workflow
-      speed and functionality.
-	</about>
-	<category>Viera</category>
-	<enableinfo>true</enableinfo>
-	</javascriptresource>
+<name>Toggle Reference Layers</name>
+<about>Shows or hides every layer whose name begins with _REF_, including nested reference layers. Evan Viera.</about>
+<menu>filter</menu>
+<category>Viera</category>
+<type>automate</type>
+<enableinfo>true</enableinfo>
+</javascriptresource>
 
-var doc = activeDocument;
-var refLayer = new RegExp( /_REF_/gim );
+#target photoshop
+#include "vieraLibrary.jsx"
 
-for ( var i = 0; i < doc.layers.length; i++ )
-{
-	if ( doc.layers[ i ].name.match( refLayer ) )
-  {
-    doc.layers[ i ].visible = !doc.layers[ i ].visible;
-  }
-}
+VieraPS.run("Toggle Reference Layers", function (documentRef) {
+    var layers = VieraPS.collectReferenceLayers(documentRef, []);
+    var shouldShow = true;
+    var index;
+
+    if (!layers.length) {
+        throw new Error("No layers beginning with '_REF_' were found.");
+    }
+
+    for (index = 0; index < layers.length; index += 1) {
+        if (layers[index].visible) {
+            shouldShow = false;
+            break;
+        }
+    }
+
+    VieraPS.withHistory(documentRef, "Toggle Reference Layers", function () {
+        for (index = 0; index < layers.length; index += 1) {
+            layers[index].visible = shouldShow;
+        }
+    });
+});

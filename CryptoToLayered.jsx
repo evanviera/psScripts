@@ -1,100 +1,71 @@
 <javascriptresource>
-  <name>Cryptomatte to Layered PSD</name>
-  <about>
-      This will convert an exr cyrptomatte file to a layered PSD.
-  		This assumes that the EXR was unpacked by EXR-IO
-  		https://www.exr-io.com/
-  		Evan Viera
-  </about>
-  <enableinfo>true</enableinfo>
-  <menu>filter</menu>
-  <category>Viera</category>
-  <type>automate</type>
-  </javascriptresource>
+<name>Cryptomatte to Layered PSD</name>
+<about>Uses EXR-IO's unpacked Crypto layers to create masked copies of the Combined.RGBA render. Evan Viera.</about>
+<menu>filter</menu>
+<category>Viera</category>
+<type>automate</type>
+<enableinfo>true</enableinfo>
+</javascriptresource>
 
+#target photoshop
 #include "vieraLibrary.jsx"
 
-var doc = activeDocument;
-var layerIndex = 0;
-var rgbLayer;
+VieraPS.run("Cryptomatte to Layered PSD", function (documentRef) {
+    var cryptoLayers = [];
+    var rgbLayer = null;
+    var originalVisibility = VieraPS.snapshotVisibility(documentRef);
+    var index;
+    var layer;
 
-// Collect all Cryptomatte Layers
-var cryptoLayers = getAllCrypoLayers( );
+    if (documentRef.mode !== DocumentMode.RGB) {
+        throw new Error("The unpacked EXR must be open as an RGB document.");
+    }
 
-// Find "RenderLayer.Combined.RGBA" and store as variable rgbLayer
-// Disable the visibility for all layers. Important for the RGB to A function.
+    for (index = 0; index < documentRef.layers.length; index += 1) {
+        layer = documentRef.layers[index];
+        if (/Combined[._ ]RGBA/i.test(layer.name)) {
+            rgbLayer = layer;
+        } else if (/Crypto/i.test(layer.name)) {
+            cryptoLayers.push(layer);
+        }
+    }
 
-var RgbCombined = new RegExp( /Combined.RGBA/gim );
+    if (!rgbLayer) {
+        throw new Error("No top-level layer containing 'Combined.RGBA' was found.");
+    }
+    if (!cryptoLayers.length) {
+        throw new Error("No top-level layers containing 'Crypto' were found.");
+    }
 
-for ( var i = 0; i < doc.layers.length; i++ )
-{
-	if ( doc.layers[ i ].name.match( RgbCombined ) ) rgbLayer = doc.layers[ i ];
-	doc.layers[ i ].visible = false;
-}
+    VieraPS.withHistory(documentRef, "Cryptomatte to Layered PSD", function () {
+        var outputs = [];
+        var cryptoLayer;
+        var cryptoName;
+        var rgbDuplicate;
+        var result;
 
+        try {
+            VieraPS.hideAll(originalVisibility);
+            for (index = 0; index < cryptoLayers.length; index += 1) {
+                cryptoLayer = cryptoLayers[index];
+                cryptoName = cryptoLayer.name;
+                cryptoLayer.visible = true;
+                VieraPS.convertRgbToMask(documentRef, cryptoLayer, false);
 
-// Loop Through Crypto and convert RGB to A
-for ( var i = 0; i < cryptoLayers.length; i++ )
-{
-	var currentLayer = cryptoLayers[ i ];
-	currentLayer.visible = true;
-
-	var convertedLayer = applyCryptoToRgbLayer( currentLayer );
-	convertedLayer.visible = false;
-}
-
-
-// Make all newly created layers visible.
-for ( var i = 0; i < cryptoLayers.length; i++ ) cryptoLayers[ i ].visible = true;
-
-
-
-
-
-
-/*		------------------------------------------------
-
-		Main function.
-
-		This will call the convert
-		function that transfors RGB into the layer's
-		matte. Then will duplicate the RGB layer and
-		flatten it.
-
-		------------------------------------------------
-*/
-function applyCryptoToRgbLayer( __cryptoLayer )
-{
-	doc.activeLayer = __cryptoLayer;
-	convertRGBToMask();
-
-	var rgbDuplicate = rgbLayer.duplicate( __cryptoLayer, ElementPlacement.PLACEBEFORE );
-		rgbDuplicate.grouped = true;
-
-	return rgbDuplicate.merge( );
-}
-
-
-/*		------------------------------------------------
-
-		Loops through and collects all crypto layers that
-		it finds via the regex expression.
-
-		------------------------------------------------
-*/
-function getAllCrypoLayers( )
-{
-	var collectedLayers = [];
-	var regEx = new RegExp( /Crypto/gim );
-
-	for ( var i = 0; i < doc.layers.length; i++ )
-	{
-		var currentLayer = doc.layers[ i ];
-		if ( currentLayer.name.match( regEx ) )
-		{
-			collectedLayers.push( currentLayer );
-		}
-	}
-
-	return collectedLayers;
-}
+                rgbDuplicate = rgbLayer.duplicate(cryptoLayer, ElementPlacement.PLACEBEFORE);
+                rgbDuplicate.visible = true;
+                rgbDuplicate.grouped = true;
+                result = rgbDuplicate.merge();
+                result.name = cryptoName;
+                result.visible = false;
+                outputs.push(result);
+            }
+        } finally {
+            VieraPS.restoreVisibility(originalVisibility);
+        }
+        for (index = 0; index < outputs.length; index += 1) {
+            outputs[index].visible = true;
+        }
+        documentRef.activeLayer = outputs[0];
+    });
+});

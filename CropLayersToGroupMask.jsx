@@ -1,48 +1,61 @@
 <javascriptresource>
-	<name>Crop Layers to Group's Mask</name>
-	<about>
-			This will take the group's mask and crop all
-      layers within the group to the mask.
-	</about>
-	<menu>filter</menu>
-	<category>Viera</category>
-	<type>automate</type>
-	<enableinfo>true</enableinfo>
-	</javascriptresource>
+<name>Crop Layers to Group Mask</name>
+<about>Clears pixels outside the selected group's layer mask on every pixel layer inside the group. Evan Viera.</about>
+<menu>filter</menu>
+<category>Viera</category>
+<type>automate</type>
+<enableinfo>true</enableinfo>
+</javascriptresource>
 
+#target photoshop
 #include "vieraLibrary.jsx"
 
-var doc = activeDocument;
-var selectedLayer = doc.activeLayer;
-var collectedLayers = [ ];
-var bounds = [ 0, 0, doc.width, doc.height ];
+VieraPS.run("Crop Layers to Group Mask", function (documentRef) {
+    var group = documentRef.activeLayer;
+    var layers;
 
-doc.crop( bounds );
+    if (!VieraPS.isGroup(group)) {
+        throw new Error("Select a layer group before running this script.");
+    }
+    if (!VieraPS.hasLayerMask(documentRef, group)) {
+        throw new Error("The selected group does not have a layer mask.");
+    }
 
+    layers = VieraPS.collectPixelLayers(group, 0, [], true);
+    if (!layers.length) {
+        throw new Error("The selected group does not contain any pixel layers.");
+    }
 
-if ( selectedLayer.typename == "LayerSet" )
-{
-  if ( hasLayerMask( selectedLayer ) )
-	{
-		collectedLayers = collectLayersBelow( 0, selectedLayer );
-		layerMaskToSelection( );
-		doc.selection.invert( );
-  }
-  else
-	{
-    alert( "Selected Layer has no layer mask" )
-  }
-}
-else
-{
-  alert( "Selected Layer is not a Layer Set" );
-}
+    VieraPS.withHistory(documentRef, "Crop Layers to Group Mask", function () {
+        var index;
+        var layer;
+        var locks;
 
+        try {
+            VieraPS.loadLayerMaskSelection(documentRef, group);
+            if (VieraPS.selectionExists(documentRef)) {
+                documentRef.selection.invert();
+            } else {
+                documentRef.selection.selectAll();
+            }
 
-for ( var i = 0; i < collectedLayers.length; i++ )
-{
-	doc.activeLayer =	collectedLayers[ i ];
-	doc.selection.clear( );
-}
-
-doc.selection.deselect( );
+            // A fully white mask leaves no outside area, so there is nothing to clear.
+            if (VieraPS.selectionExists(documentRef)) {
+                for (index = 0; index < layers.length; index += 1) {
+                    layer = layers[index];
+                    locks = VieraPS.captureLocks(layer);
+                    VieraPS.unlockLayer(layer);
+                    try {
+                        documentRef.activeLayer = layer;
+                        documentRef.selection.clear();
+                    } finally {
+                        VieraPS.restoreLocks(layer, locks);
+                    }
+                }
+            }
+        } finally {
+            documentRef.selection.deselect();
+            documentRef.activeLayer = group;
+        }
+    });
+});

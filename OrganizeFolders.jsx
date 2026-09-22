@@ -1,44 +1,35 @@
 <javascriptresource>
-  <name>Organize Folders</name>
-  <about>
-      This will color code nested folders to help readiblity.
-      It will also rename layers.
-      - Evan Viera
-  </about>
-  <menu>filter</menu>
-  <category>Viera</category>
-  <type>automate</type>
-  <enableinfo>true</enableinfo>
-  </javascriptresource>
+<name>Organize Folders</name>
+<about>Applies repeating Photoshop label colors to nested layer groups. Evan Viera.</about>
+<menu>filter</menu>
+<category>Viera</category>
+<type>automate</type>
+<enableinfo>true</enableinfo>
+</javascriptresource>
 
+#target photoshop
 #include "vieraLibrary.jsx"
 
-var doc = activeDocument;
-var idColors = [ "Rd  ", "Orng", "Ylw ", "Grn ", "Bl  ", "Vlt ", "Gry " ];
-var lastColor = 0;
+VieraPS.run("Organize Folders", function (documentRef) {
+    var colors = ["Rd  ", "Orng", "Ylw ", "Grn ", "Bl  ", "Vlt ", "Gry "];
+    var colorIndex = 0;
+    var originalLayer = documentRef.activeLayer;
 
-colorGroupTags( doc );
-
-//	****************************************
-// 	Collects all layers underneat into array
-//	****************************************
-function colorGroupTags( __parent )
-{
-    for ( var i = 0; i < __parent.layers.length; i++ )
-    {
-
-      var currentLayer = __parent.layers[ i ];
-      var visible = currentLayer.visible;
-
-      if ( currentLayer.typename != "ArtLayer" )
-      {
-  			doc.activeLayer = currentLayer;
-  			setLabelColor( idColors[ lastColor ] );
-  			lastColor = (lastColor + 1) % idColors.length;
-
-        colorGroupTags( currentLayer );
-      }
-
-      currentLayer.visible = visible;
+    function colorGroups(parent) {
+        var index;
+        var layer;
+        for (index = 0; index < parent.layers.length; index += 1) {
+            layer = parent.layers[index];
+            if (VieraPS.isGroup(layer)) {
+                VieraPS.setLabelColor(documentRef, layer, colors[colorIndex]);
+                colorIndex = (colorIndex + 1) % colors.length;
+                colorGroups(layer);
+            }
+        }
     }
-}
+
+    VieraPS.withHistory(documentRef, "Organize Folders", function () {
+        colorGroups(documentRef);
+        VieraPS.restoreActiveLayer(documentRef, originalLayer);
+    });
+});

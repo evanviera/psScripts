@@ -1,151 +1,81 @@
 <javascriptresource>
-	<name>Bake Selected Layer</name>
-	<about>
-			This will bake the selected layer onto all the layers below.
-			This is best used for adjustment layers, but it can be a
-			layer of any type.
-			Evan Viera
-	</about>
-	<menu>filter</menu>
-	<category>Viera</category>
-	<type>automate</type>
-	<enableinfo>true</enableinfo>
+<name>Bake Selected Layer</name>
+<about>Bakes the selected layer into the visible pixel layers below it and keeps a hidden proof of the original composite. Evan Viera.</about>
+<menu>filter</menu>
+<category>Viera</category>
+<type>automate</type>
+<enableinfo>true</enableinfo>
 </javascriptresource>
 
-
-/*
-		-------------------------------------------------------------
-
-						REVISIONS
-
-						When an adjustment layer is baked that is also
-						a clipping layer, it will break the clipping
-						heierachy.
-
-							Solution: Iterate through all layers, collect
-							their relevant information and set it back
-							once done.
-
-		-------------------------------------------------------------
-*/
-
-
+#target photoshop
 #include "vieraLibrary.jsx"
 
-var doc = activeDocument;
-var selectedLayer = doc.activeLayer;
-var layerParent = selectedLayer.parent;
-var collectedLayers = [ ];
+VieraPS.run("Bake Selected Layer", function (documentRef) {
+    var source = documentRef.activeLayer;
+    var sourceIndex = VieraPS.getLayerIndex(source);
+    var targets;
 
-var layerIndex = getIndex( selectedLayer );
+    if (!source.visible) {
+        throw new Error("The selected layer must be visible before it can be baked.");
+    }
+    if (sourceIndex < 0) {
+        throw new Error("Photoshop could not locate the selected layer in its parent.");
+    }
 
-if ( selectedLayer.grouped == true ) collectClippingLayers( );
-else collectLayersBelow( layerIndex, layerParent );
+    targets = (source.typename === "ArtLayer" && source.grouped) ?
+        VieraPS.collectClippingTargets(source) :
+        VieraPS.collectPixelLayers(source.parent, sourceIndex + 1, [], false);
 
-proofCopy( );
-copyAndMergeSelectedLayer( );
-selectedLayer.remove( );
+    if (!targets.length) {
+        throw new Error("No visible pixel layers were found below the selected layer.");
+    }
 
-doc.activeLayer = doc.layers[ 0 ];
-proofPaste( );
+    VieraPS.withHistory(documentRef, "Bake Selected Layer", function () {
+        var mergedLayers = [];
+        var index;
+        var target;
+        var targetName;
+        var wasGrouped;
+        var wasVisible;
+        var locks;
+        var duplicate;
+        var merged;
+        var proof;
 
+        try {
+            documentRef.selection.selectAll();
+            documentRef.selection.copy(true);
+        } finally {
+            documentRef.selection.deselect();
+        }
 
+        for (index = 0; index < targets.length; index += 1) {
+            target = targets[index];
+            targetName = target.name;
+            wasGrouped = target.grouped;
+            wasVisible = target.visible;
+            locks = VieraPS.captureLocks(target);
+            VieraPS.unlockLayer(target);
+            merged = null;
+            try {
+                duplicate = source.duplicate(target, ElementPlacement.PLACEBEFORE);
+                duplicate.visible = true;
+                duplicate.grouped = true;
+                merged = duplicate.merge();
+                merged.name = targetName;
+                merged.visible = wasVisible;
+                merged.grouped = wasGrouped;
+            } finally {
+                VieraPS.restoreLocks(merged || target, locks);
+            }
+            mergedLayers.push(merged);
+        }
 
-
-
-
-/*
-		-------------------------------------------------------------
-
-						Collects all layers below into array
-
-		-------------------------------------------------------------
-*/
-function collectLayersBelow( __index, __parent )
-{
-	for ( var i = __index; i < __parent.layers.length; i++ ) {
-
-		var currentLayer = __parent.layers[ i ];
-		var isvalid = validateLayer( currentLayer );
-
-		if ( currentLayer.typename == "LayerSet" ) {
-			collectLayersBelow( 0, currentLayer );
-		} else if ( isvalid == true ) {
-			collectedLayers.push( currentLayer );
-			currentLayer.allLocked = false;
-		}
-	}
-}
-
-
-
-/*
-		-------------------------------------------------------------
-
-						Collects all clipping layers of a group
-
-		-------------------------------------------------------------
-*/
-function collectClippingLayers( )
-{
-	var i = layerIndex;
-	var currentLayer = layerParent.layers[ i ];
-
-	while ( currentLayer.grouped == true )
-	{
-		currentLayer = layerParent.layers[ i ];
-		var isvalid = validateLayer( currentLayer );
-
-		if ( currentLayer.typename == "LayerSet" ) {
-			collectLayersBelow( 0, currentLayer );
-		} else if ( isvalid == true ) {
-			collectedLayers.push( currentLayer );
-		}
-
-		i++;
-	}
-}
-
-
-
-/*
-		-------------------------------------------------------------
-
-						Executes actions for all layers in array
-
-		-------------------------------------------------------------
-*/
-function copyAndMergeSelectedLayer( )
-{
-	for ( var i = 0; i < collectedLayers.length; i++ )
-	{
-		var duplicatedLayer = selectedLayer.duplicate( collectedLayers[i],
-													ElementPlacement.PLACEBEFORE );
-		if ( duplicatedLayer.grouped == false ) duplicatedLayer.grouped = true;
-		duplicatedLayer.merge( );
-	}
-}
-
-
-
-/*
-		-------------------------------------------------------------
-
-						Layer is ArtLayer, Visible, and Pixel (Normal)
-
-		-------------------------------------------------------------
-*/
-function validateLayer( __layer )
-{
-	if ( __layer.kind == LayerKind.NORMAL ) {
-		if ( __layer.typename == "ArtLayer" ) {
-			if ( __layer.visible == true) {
-				// if ( __layer.blendMode == BlendMode.NORMAL ) {
-					return true;
-				// }
-			}
-		}
-	}
-
-	return false;
-}
+        source.remove();
+        documentRef.activeLayer = documentRef.layers[0];
+        proof = documentRef.paste();
+        proof.name = "PROOF";
+        proof.visible = false;
+        documentRef.activeLayer = mergedLayers[0];
+    });
+});
