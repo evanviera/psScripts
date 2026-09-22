@@ -4,7 +4,7 @@ A refactored collection of Photoshop ExtendScript (`.jsx`) utilities for layer-h
 
 ## Scripts
 
-- **Bake Selected Layer** bakes the selected layer into visible pixel layers below it while preserving the existing layer order, names, and clipping masks. A clipped source is baked through its clipping stack, including the base layer.
+- **Bake Selected Layer** bakes one or more selected individual layers into visible pixel layers below them while preserving the existing layer order, names, and clipping masks. A clipped source is baked through its clipping stack, including the base layer. A hidden top-level `PROOF` layer contains the document's visible composite from before the bake.
 - **Convert RGB to Mask** isolates the selected layer and converts the union of its red, green, and blue intensities into a user mask.
 - **Crop Layers to Group Mask** permanently clears pixels outside a selected group's layer mask on every nested pixel layer.
 - **Cryptomatte to Layered PSD** converts EXR-IO unpacked `Crypto` layers into masked copies of the top-level `Combined.RGBA` layer.

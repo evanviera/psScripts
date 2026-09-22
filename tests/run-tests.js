@@ -151,7 +151,8 @@ function testBakeClippingRestoration() {
     );
 
     const snapshot = [];
-    context.captureBakeClipping(doc, source, snapshot);
+    context.captureBakeClipping(doc, [source], snapshot);
+    assert.strictEqual(snapshot.length, 4, "selected sources should not be part of the clipping snapshot");
     const replacement = pixel("clipped replacement");
     context.replaceBakeClippingLayer(snapshot, clipped, replacement);
     nestedClipped.grouped = false;
@@ -163,6 +164,43 @@ function testBakeClippingRestoration() {
     assert.strictEqual(nestedBase.grouped, false);
 }
 
+function testBakeSelectionAndPlans(VieraPS) {
+    const upper = pixel("upper adjustment", { kind: "adjustment", id: 1 });
+    const middle = pixel("middle pixels", { id: 2 });
+    const lower = pixel("lower adjustment", { kind: "adjustment", id: 3 });
+    const bottom = pixel("bottom pixels", { id: 4 });
+    const doc = documentWith([upper, middle, lower, bottom]);
+    doc.activeLayer = lower;
+    const selectedIds = [3, 1];
+    const context = {
+        VieraPS: Object.assign({}, VieraPS, { run() {} }),
+        ActionReference: function () {
+            this.putProperty = function () {};
+            this.putEnumerated = function () {};
+        },
+        charIDToTypeID: (value) => value,
+        stringIDToTypeID: (value) => value,
+        executeActionGet: () => ({
+            getList: () => ({
+                count: selectedIds.length,
+                getReference: (index) => ({ getIdentifier: () => selectedIds[index] })
+            })
+        })
+    };
+    vm.createContext(context);
+    vm.runInContext(
+        stripExtendScriptDirectives(fs.readFileSync(path.join(root, "BakeSelectedLayer.jsx"), "utf8")),
+        context
+    );
+
+    const sources = context.getSelectedBakeLayers(doc);
+    assert.deepStrictEqual(Array.from(sources, (layer) => layer.name), ["upper adjustment", "lower adjustment"]);
+    const plans = context.createBakePlans(doc, sources);
+    assert.deepStrictEqual(Array.from(plans, (plan) => plan.target.name), ["bottom pixels", "middle pixels"]);
+    assert.deepStrictEqual(Array.from(plans[0].sources, (layer) => layer.name), ["upper adjustment", "lower adjustment"]);
+    assert.deepStrictEqual(Array.from(plans[1].sources, (layer) => layer.name), ["upper adjustment"]);
+}
+
 function main() {
     parseAllScripts();
     const VieraPS = loadLibrary();
@@ -171,6 +209,7 @@ function main() {
     testReferences(VieraPS);
     testNames(VieraPS);
     testBakeClippingRestoration();
+    testBakeSelectionAndPlans(VieraPS);
     console.log("All Photoshop script tests passed.");
 }
 
