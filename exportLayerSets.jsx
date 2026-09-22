@@ -1,14 +1,15 @@
+/*
 <javascriptresource>
 <name>Export Top-level Layer Sets</name>
 <about>Exports each masked top-level group, except _REF_ groups, to a tightly cropped PNG. Evan Viera.</about>
 <menu>filter</menu>
 <category>Viera</category>
-<type>automate</type>
 <enableinfo>true</enableinfo>
 </javascriptresource>
+*/
 
 #target photoshop
-#include "vieraLibrary.jsx"
+#include "vieraLibrary.jsxinc"
 
 VieraPS.run("Export Top-level Layer Sets", function (documentRef) {
     var originalDialogs = app.displayDialogs;

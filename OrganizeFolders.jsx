@@ -1,14 +1,15 @@
+/*
 <javascriptresource>
 <name>Organize Folders</name>
 <about>Applies repeating Photoshop label colors to nested layer groups. Evan Viera.</about>
 <menu>filter</menu>
 <category>Viera</category>
-<type>automate</type>
 <enableinfo>true</enableinfo>
 </javascriptresource>
+*/
 
 #target photoshop
-#include "vieraLibrary.jsx"
+#include "vieraLibrary.jsxinc"
 
 VieraPS.run("Organize Folders", function (documentRef) {
     var colors = ["Rd  ", "Orng", "Ylw ", "Grn ", "Bl  ", "Vlt ", "Gry "];

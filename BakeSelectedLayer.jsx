@@ -1,14 +1,15 @@
+/*
 <javascriptresource>
 <name>Bake Selected Layer</name>
 <about>Bakes the selected layer into the visible pixel layers below it and keeps a hidden proof of the original composite. Evan Viera.</about>
 <menu>filter</menu>
 <category>Viera</category>
-<type>automate</type>
 <enableinfo>true</enableinfo>
 </javascriptresource>
+*/
 
 #target photoshop
-#include "vieraLibrary.jsx"
+#include "vieraLibrary.jsxinc"
 
 VieraPS.run("Bake Selected Layer", function (documentRef) {
     var source = documentRef.activeLayer;

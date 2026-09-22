@@ -1,14 +1,15 @@
+/*
 <javascriptresource>
 <name>Cryptomatte to Layered PSD</name>
 <about>Uses EXR-IO's unpacked Crypto layers to create masked copies of the Combined.RGBA render. Evan Viera.</about>
 <menu>filter</menu>
 <category>Viera</category>
-<type>automate</type>
 <enableinfo>true</enableinfo>
 </javascriptresource>
+*/
 
 #target photoshop
-#include "vieraLibrary.jsx"
+#include "vieraLibrary.jsxinc"
 
 VieraPS.run("Cryptomatte to Layered PSD", function (documentRef) {
     var cryptoLayers = [];

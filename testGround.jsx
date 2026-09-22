@@ -1,14 +1,15 @@
+/*
 <javascriptresource>
 <name>Inspect Current Layer</name>
 <about>Shows diagnostic information for the currently selected Photoshop layer. Evan Viera.</about>
 <menu>filter</menu>
 <category>Viera</category>
-<type>automate</type>
 <enableinfo>true</enableinfo>
 </javascriptresource>
+*/
 
 #target photoshop
-#include "vieraLibrary.jsx"
+#include "vieraLibrary.jsxinc"
 
 VieraPS.run("Inspect Current Layer", function (documentRef) {
     var layer = documentRef.activeLayer;

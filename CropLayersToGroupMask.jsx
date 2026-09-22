@@ -1,14 +1,15 @@
+/*
 <javascriptresource>
 <name>Crop Layers to Group Mask</name>
 <about>Clears pixels outside the selected group's layer mask on every pixel layer inside the group. Evan Viera.</about>
 <menu>filter</menu>
 <category>Viera</category>
-<type>automate</type>
 <enableinfo>true</enableinfo>
 </javascriptresource>
+*/
 
 #target photoshop
-#include "vieraLibrary.jsx"
+#include "vieraLibrary.jsxinc"
 
 VieraPS.run("Crop Layers to Group Mask", function (documentRef) {
     var group = documentRef.activeLayer;

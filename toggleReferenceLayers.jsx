@@ -1,14 +1,15 @@
+/*
 <javascriptresource>
 <name>Toggle Reference Layers</name>
 <about>Shows or hides every layer whose name begins with _REF_, including nested reference layers. Evan Viera.</about>
 <menu>filter</menu>
 <category>Viera</category>
-<type>automate</type>
 <enableinfo>true</enableinfo>
 </javascriptresource>
+*/
 
 #target photoshop
-#include "vieraLibrary.jsx"
+#include "vieraLibrary.jsxinc"
 
 VieraPS.run("Toggle Reference Layers", function (documentRef) {
     var layers = VieraPS.collectReferenceLayers(documentRef, []);

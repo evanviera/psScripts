@@ -1,14 +1,15 @@
+/*
 <javascriptresource>
 <name>Organize Folders and Rename</name>
 <about>Colors groups and assigns predictable GRP_ and LYR_ names, while preserving _REF_ branches. Evan Viera.</about>
 <menu>filter</menu>
 <category>Viera</category>
-<type>automate</type>
 <enableinfo>true</enableinfo>
 </javascriptresource>
+*/
 
 #target photoshop
-#include "vieraLibrary.jsx"
+#include "vieraLibrary.jsxinc"
 
 VieraPS.run("Organize Folders and Rename", function (documentRef) {
     var colors = ["Rd  ", "Orng", "Ylw ", "Grn ", "Bl  ", "Vlt ", "Gry "];

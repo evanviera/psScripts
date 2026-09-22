@@ -9,7 +9,6 @@ const root = path.resolve(__dirname, "..");
 
 function stripExtendScriptDirectives(source) {
     return source
-        .replace(/<javascriptresource>[\s\S]*?<\/javascriptresource>/g, "")
         .replace(/^\s*#(?:target|include).*$/gm, "");
 }
 
@@ -18,18 +17,23 @@ function parseAllScripts() {
     files.forEach((name) => {
         const source = fs.readFileSync(path.join(root, name), "utf8");
         assert(!/\b(?:const|let)\b|=>|`/.test(source), `${name} should remain ExtendScript ES3 compatible`);
+        assert(/\/\*[\s\S]*?<javascriptresource>[\s\S]*?<\/javascriptresource>[\s\S]*?\*\//.test(source), `${name} should contain a commented Photoshop resource`);
+        assert(source.includes("<menu>filter</menu>"), `${name} should register in Photoshop's Filter menu`);
+        assert(source.includes("<category>Viera</category>"), `${name} should use the Viera category`);
+        assert(source.includes('#include "vieraLibrary.jsxinc"'), `${name} should include the shared library`);
         assert.doesNotThrow(
             () => new Function(stripExtendScriptDirectives(source)),
             `${name} should contain valid JavaScript after ExtendScript directives are removed`
         );
     });
-    assert(files.length >= 11, "expected the shared library and ten entry scripts");
+    assert.strictEqual(files.length, 10, "expected ten runnable entry scripts");
+    assert(fs.existsSync(path.join(root, "vieraLibrary.jsxinc")), "expected the shared include file");
     assert(!fs.existsSync(path.join(root, "Boarding")), "the retired Boarding folder should stay removed");
 }
 
 function loadLibrary() {
     const source = stripExtendScriptDirectives(
-        fs.readFileSync(path.join(root, "vieraLibrary.jsx"), "utf8")
+        fs.readFileSync(path.join(root, "vieraLibrary.jsxinc"), "utf8")
     );
     const context = {
         LayerKind: { NORMAL: "normal", TEXT: "text" },
@@ -132,10 +136,19 @@ function testNames(VieraPS) {
     assert.strictEqual(VieraPS.sanitizeFileName(" face:front? "), "face_front_");
 }
 
-parseAllScripts();
-const VieraPS = loadLibrary();
-testTraversal(VieraPS);
-testClippingTargets(VieraPS);
-testReferences(VieraPS);
-testNames(VieraPS);
-console.log("All Photoshop script tests passed.");
+function main() {
+    parseAllScripts();
+    const VieraPS = loadLibrary();
+    testTraversal(VieraPS);
+    testClippingTargets(VieraPS);
+    testReferences(VieraPS);
+    testNames(VieraPS);
+    console.log("All Photoshop script tests passed.");
+}
+
+try {
+    main();
+} catch (error) {
+    console.error(error);
+    process.exitCode = 1;
+}
